@@ -38,10 +38,10 @@ class Perceptron(object):
             self.iris_data.append(Iris(inputs=self._get_inputs(row[1], inputs_str), expected_type=data_type))
             np.random.shuffle(self.iris_data)
 
-    def train(self):
-        qt_trainning = int(0.8 * len(self.data_set))
+    def train(self, dataset):
+        qt_trainning = int(0.8 * len(dataset))
         self.weights = np.random.rand(self.inputs_size + 1)
-        self.train_data, self.test_data = self.iris_data[:qt_trainning], self.iris_data[qt_trainning:]
+        self.train_data, self.test_data = dataset[:qt_trainning], dataset[qt_trainning:]
 
         for epoch in range(self.max_epochs):
             np.random.shuffle(self.train_data)
