@@ -47,27 +47,29 @@ class Perceptron(object):
             np.random.shuffle(self.train_data)
             #print('Epoca: {0}, Pesos: {1}'.format(epoch, self.weights))
             for iris in self.test_data:
-                guess = self.classify(iris.inputs[:self.inputs_size])
+                guess = self.classify(iris.inputs[:self.inputs_size], self.weights)
                 error = iris.expected_type - guess
                 update = self.learn_rate * error
                 self.weights[1:] += update * np.array(iris.inputs[:self.inputs_size])
                 self.weights[0] += update 
 
-    def classify(self, inputs):
-        value = np.dot(inputs, self.weights[1:]) + self.weights[0]
-        return 1 if value >= 0.0 else -1
+    def classify(self, inputs, weights):
+        value = np.dot(inputs, weights[1:]) + weights[0]
+        return 1 if value >= 0.0 else 0
 
     def test(self):
         self.values = []
         for iris in self.test_data:
-            value = self.classify(iris.inputs[:self.inputs_size])
+            value = self.classify(iris.inputs[:self.inputs_size], self.weights)
             self.values.append(value)
             #print('Guess_Type: {0}, Expected_Type: {1}'.format(value, iris.inputs[self.inputs_size]))
 
-    def accuracy(self):
+    def accuracy_and_matrix(self):
         hits = 0
+        matrix = [[0, 0], [0, 0]]
         for xi, yi in zip(self.test_data, self.values):
+            matrix[xi.expected_type][yi] += 1
             if (xi.expected_type == yi): hits += 1
         
         accuracy = (hits / len(self.test_data)) * 100
-        return accuracy
+        return accuracy, np.array(matrix)
