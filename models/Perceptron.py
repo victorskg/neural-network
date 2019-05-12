@@ -11,7 +11,7 @@ class Perceptron(object):
     weights, values = [], []
     data_set, iris_data, train_data, test_data = [], [], [], []
 
-    def __init__(self, learn_rate=0.1, max_epochs=30, data_path="datasets/iris.data"):
+    def __init__(self, learn_rate=0.1, max_epochs=200, data_path="datasets/iris.data"):
         self.learn_rate = learn_rate
         self.max_epochs = max_epochs
         self.data_set = self._read_data(data_path)
