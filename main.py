@@ -1,9 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from models.Perceptron import Perceptron
+from models.Adaline import Adaline
 
 def main():
     perceptron = Perceptron(learn_rate = 0.1, max_epochs = 200, data_path = "datasets/iris.data")
+    adaline = Adaline(learn_rate = 0.1, max_epochs = 200, required_precision = 0.5)
 
     def _calc_accuracy(array):
         return sum(array) / len(array)
