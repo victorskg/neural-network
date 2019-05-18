@@ -114,6 +114,7 @@ def main():
 
     def run_adaline():
         adaline.train(adaline.data_set)
+        adaline.plot(adaline.data_set, adaline.weights)
 
     run_adaline()
 

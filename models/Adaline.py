@@ -10,8 +10,6 @@ class Adaline(object):
         self.required_precision = required_precision
         self.start_artificial_dataset(a, b)
         self.init_weights()
-        #plt.scatter(self.data_set[0], self.data_set[1], c='g')
-        #plt.show()
 
     @staticmethod
     def y(x, a, b):
@@ -21,30 +19,49 @@ class Adaline(object):
     def shuflle(values):
         np.random.shuffle(values)
 
+    @staticmethod
+    def normalize(dataset):
+        for i in range(dataset.shape[1]):
+            max_ = max(dataset[:, i])
+            min_ = min(dataset[:, i])
+            for j in range(dataset.shape[0]):
+                dataset[j, i] = (dataset[j, i] - min_) / (max_ - min_)
+        return dataset
+    
+    @staticmethod
+    def plot(dataset, w):
+        y = []
+        for i in dataset:
+            y.append(np.dot(np.array([-1.0, i[0]]), w))
+        
+        plt.scatter(dataset[:, 0], dataset[:, 1], s=3, c='r')
+        plt.plot(dataset[:, 0], y, color='b')
+        plt.xlabel('x')
+        plt.ylabel('y')
+        plt.title('ADALINE - Result after training')
+        plt.show()
+
     def start_artificial_dataset(self, a, b):
         X = np.linspace(0, 10, 100)
-        Y = [self.y(x, a, b) + np.random.rand() * 2 for x in X]
-        self.data_set.append(X)
-        self.data_set.append(Y)
+        Y = [self.y(x, a, b) + np.random.uniform(-1, 1) for x in X]
+        data = [[i, j] for i, j in zip(X, Y)]
+        self.data_set = self.normalize(np.array(data))
 
     def train(self, dataset):
-        index_iteraction = [i for i in range(100)]
-        qt_trainning = int(0.8 * len(index_iteraction))
-        self.shuflle(index_iteraction)
-        self.train_data, self.test_data = index_iteraction[:qt_trainning], index_iteraction[qt_trainning:]
+        self.shuflle(dataset)
+        qt_trainning = int(0.8 * len(dataset))
+        self.train_data, self.test_data = dataset[:qt_trainning], dataset[qt_trainning:]
 
         for epoch in range(self.max_epochs):
             self.shuflle(self.train_data)
-            for index in self.train_data:
-                x = self.data_set[0][index]
-                y = self.data_set[1][index]
-                inputs = np.array([x, -1.0])
+            for point in self.train_data:
+                x = point[0]
+                y = point[1]
+                inputs = np.array([-1.0, x])
                 guess = np.dot(inputs, self.weights)
                 error = y - guess
-                print(self.weights, error, inputs)
                 self.weights += self.learn_rate * error * inputs
         print(self.weights)
-
 
     def init_weights(self):
         self.weights = np.random.rand(2)
