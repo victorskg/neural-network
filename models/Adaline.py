@@ -2,14 +2,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 class Adaline(object):
-    data_set, weights = [], []
+    realization_errors, data_set, weights = [], [], []
 
-    def __init__(self, learn_rate, max_epochs, required_precision, a=2, b=3):
+    def __init__(self, learn_rate, max_epochs, required_precision):
         self.learn_rate = learn_rate
         self.max_epochs = max_epochs
         self.required_precision = required_precision
-        self.start_artificial_dataset(a, b)
-        self.init_weights()
 
     @staticmethod
     def y(x, a, b):
@@ -31,8 +29,8 @@ class Adaline(object):
     @staticmethod
     def plot(dataset, w):
         y = []
-        for i in dataset:
-            y.append(np.dot(np.array([-1.0, i[0]]), w))
+        for data in dataset:
+            y.append(np.dot(np.array([-1.0, data[0]]), w))
         
         plt.scatter(dataset[:, 0], dataset[:, 1], s=3, c='r')
         plt.plot(dataset[:, 0], y, color='b')
@@ -42,6 +40,7 @@ class Adaline(object):
         plt.show()
 
     def start_artificial_dataset(self, a, b):
+        self.init_weights()
         X = np.linspace(0, 10, 100)
         Y = [self.y(x, a, b) + np.random.uniform(-1, 1) for x in X]
         data = [[i, j] for i, j in zip(X, Y)]
@@ -61,7 +60,14 @@ class Adaline(object):
                 guess = np.dot(inputs, self.weights)
                 error = y - guess
                 self.weights += self.learn_rate * error * inputs
-        print(self.weights)
+
+    def test(self):
+        errors = []
+        for data in self.test_data:
+            y = np.dot(np.array([-1.0, data[0]]), self.weights)
+            error = data[1] - y
+            errors.append(error * error)
+        self.realization_errors.append(np.mean(errors))
 
     def init_weights(self):
         self.weights = np.random.rand(2)

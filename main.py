@@ -5,9 +5,9 @@ from models.Perceptron import Perceptron
 from models.SingleLayerPerceptron import SingleLayerPerceptron
 
 def main():
+    adaline = Adaline(learn_rate = 0.1, max_epochs = 200, required_precision = 0.5)
     perceptron = Perceptron(learn_rate = 0.1, max_epochs = 200, data_path = "datasets/iris.data")
     #single_layer_perceptron = SingleLayerPerceptron(learn_rate = 0.1, max_epochs = 200, data_path = "datasets/iris.data")
-    adaline = Adaline(learn_rate = 0.1, max_epochs = 200, required_precision = 0.5)
 
     def _calc_accuracy(array):
         return sum(array) / len(array)
@@ -113,8 +113,19 @@ def main():
     #virginica4INPUTS()
 
     def run_adaline():
-        adaline.train(adaline.data_set)
-        adaline.plot(adaline.data_set, adaline.weights)
+        best_realization, min_mse = 0, 100
+        data_set, weigths = [], []
+        for i in range(20):
+            adaline.start_artificial_dataset(a=2, b=3)
+            adaline.train(adaline.data_set)
+            adaline.test()
+            mse = np.mean(adaline.realization_errors)
+            rmse = np.sqrt(mse)
+            if (mse < min_mse):
+                best_realization, min_mse, data_set, weigths = i+1, mse, adaline.data_set, adaline.weights
+            print('Realização: ', i+1, ', MSE: ', mse, ', RMSE: ', rmse)
+        print('Melhor realizacao: ', best_realization, ', MSE: ', min_mse)
+        adaline.plot(data_set, weigths)
 
     run_adaline()
 
