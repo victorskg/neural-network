@@ -1,10 +1,12 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from models.Perceptron import Perceptron
 from models.Adaline import Adaline
+from models.Perceptron import Perceptron
+from models.SingleLayerPerceptron import SingleLayerPerceptron
 
 def main():
     perceptron = Perceptron(learn_rate = 0.1, max_epochs = 200, data_path = "datasets/iris.data")
+    #single_layer_perceptron = SingleLayerPerceptron(learn_rate = 0.1, max_epochs = 200, data_path = "datasets/iris.data")
     adaline = Adaline(learn_rate = 0.1, max_epochs = 200, required_precision = 0.5)
 
     def _calc_accuracy(array):
@@ -80,7 +82,7 @@ def main():
         print(selected_matrix)
         #print_points(inputs, w, test_data)
 
-    versicolor4INPUTS()
+    #versicolor4INPUTS()
 
     def virginica4INPUTS():
         max_acuracy = 0
@@ -109,6 +111,11 @@ def main():
         #print_points(inputs, w, test_data)
 
     #virginica4INPUTS()
+
+    def run_adaline():
+        adaline.train(adaline.data_set)
+
+    run_adaline()
 
 if __name__ == '__main__':
     main()
