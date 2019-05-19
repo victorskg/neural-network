@@ -43,9 +43,8 @@ class Perceptron(object):
         self.weights = np.random.rand(self.inputs_size + 1)
         self.train_data, self.test_data = dataset[:qt_trainning], dataset[qt_trainning:]
 
-        for epoch in range(self.max_epochs):
+        for _ in range(self.max_epochs):
             np.random.shuffle(self.train_data)
-            #print('Epoca: {0}, Pesos: {1}'.format(epoch, self.weights))
             for iris in self.test_data:
                 guess = self.classify(iris.inputs[:self.inputs_size], self.weights)
                 error = iris.expected_type - guess
@@ -53,7 +52,8 @@ class Perceptron(object):
                 self.weights[1:] += update * np.array(iris.inputs[:self.inputs_size])
                 self.weights[0] += update 
 
-    def classify(self, inputs, weights):
+    @staticmethod
+    def classify(inputs, weights):
         value = np.dot(inputs, weights[1:]) + weights[0]
         return 1 if value >= 0.0 else 0
 

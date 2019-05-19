@@ -7,7 +7,7 @@ from models.SingleLayerPerceptron import SingleLayerPerceptron
 def main():
     adaline = Adaline(learn_rate = 0.1, max_epochs = 200)
     perceptron = Perceptron(learn_rate = 0.1, max_epochs = 200, data_path = "datasets/iris.data")
-    #single_layer_perceptron = SingleLayerPerceptron(learn_rate = 0.1, max_epochs = 200, data_path = "datasets/iris.data")
+    single_layer_perceptron = SingleLayerPerceptron(learn_rate = 0.1, max_epochs = 200, data_path = "datasets/iris.data")
 
     def _calc_accuracy(array):
         return sum(array) / len(array)
@@ -134,7 +134,14 @@ def main():
         adaline.train_3d(adaline.data_set)
         adaline.plot_3d(adaline.data_set, adaline.weights)
 
-    run_adaline_3d()
+    #run_adaline_3d()
+
+    def run_single_layer_perceptron():
+        single_layer_perceptron.prepare_data()
+        single_layer_perceptron.train([0, 1, 2, 3])
+        single_layer_perceptron.test([0, 1, 2, 3])
+
+    run_single_layer_perceptron()
 
 if __name__ == '__main__':
     main()
