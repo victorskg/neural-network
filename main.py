@@ -3,11 +3,12 @@ import matplotlib.pyplot as plt
 from models.Adaline import Adaline
 from models.Perceptron import Perceptron
 from models.SingleLayerPerceptron import SingleLayerPerceptron
+from models.PrintUtils import print_multi_weigths as pmw
 
 def main():
     adaline = Adaline(learn_rate = 0.1, max_epochs = 200)
     perceptron = Perceptron(learn_rate = 0.1, max_epochs = 200, data_path = "datasets/iris.data")
-    single_layer_perceptron = SingleLayerPerceptron(learn_rate = 0.1, max_epochs = 200, data_path = "datasets/iris.data")
+    single_layer_perceptron = SingleLayerPerceptron(learn_rate = 0.1, neuron_count=3, max_epochs = 500, data_path = "datasets/iris.data")
 
     def _calc_accuracy(array):
         return sum(array) / len(array)
@@ -137,9 +138,14 @@ def main():
     #run_adaline_3d()
 
     def run_single_layer_perceptron():
+        accuracys = []
         single_layer_perceptron.prepare_data()
-        single_layer_perceptron.train([0, 1, 2, 3])
-        single_layer_perceptron.test([0, 1, 2, 3])
+        for i in range(20):
+            single_layer_perceptron.train([2, 3])
+            accuracys.append(single_layer_perceptron.test([2, 3]))
+            print('Realização: {0}, Acurácia: {1}%'.format(i+1, accuracys[i]))
+        
+        print('Acurácia após 20 realizações: {0}%, Desvio padrão: {1}'.format(_calc_accuracy(accuracys), np.std(accuracys)))
 
     run_single_layer_perceptron()
 
