@@ -17,18 +17,24 @@ class SingleLayerPerceptron(Perceptron):
     
     def prepare_data(self):
         self.data_set = self.data_set.to_numpy()
+
+    def generate_artificial_data(self):
+        data = self.create_points([1,0], '010')
+        data = data.append(self.create_points([0,0], '100'),  ignore_index=True)
+        data = data.append(self.create_points([1,1], '001'), ignore_index=True)
+        self.artiticial_data = data.to_numpy()
         
-    def train(self, inputs):
-        np.random.shuffle(self.data_set)
-        qt_trainning = int(0.8 * len(self.data_set))
-        self.train_data, self.test_data = self.data_set[:qt_trainning], self.data_set[qt_trainning:]
+    def train(self, inputs, dataset):
+        np.random.shuffle(dataset)
+        qt_trainning = int(0.8 * len(dataset))
+        self.train_data, self.test_data = dataset[:qt_trainning], dataset[qt_trainning:]
         self.weights = [np.random.rand(len(inputs) + 1) for _ in range(self.neuron_count)] 
         for _ in range(self.max_epochs):
             np.random.shuffle(self.train_data)        
-            for iris in self.train_data:
+            for data in self.train_data:
                 outputs, guess = [], []
-                expected = np.array(list(iris[4])).astype(np.int)
-                selected_inputs = [iris[inputs[i]] for i in range(len(inputs))]       
+                expected = np.array(list(data[len(data)-1])).astype(np.int)
+                selected_inputs = [data[inputs[i]] for i in range(len(inputs))]       
                 for i in range(self.neuron_count):
                     outputs.append(self.output(selected_inputs, self.weights[i]))
                     guess.append(self.classify(outputs[i])) 
@@ -45,10 +51,10 @@ class SingleLayerPerceptron(Perceptron):
     
     def test(self, inputs):
         hits = 0
-        for iris in self.test_data:
+        for data in self.test_data:
             outputs, guess = [], []
-            selected_inputs = [iris[inputs[i]] for i in range(len(inputs))]
-            expected = np.array(list(iris[4])).astype(np.int)
+            selected_inputs = [data[inputs[i]] for i in range(len(inputs))]
+            expected = np.array(list(data[len(data)-1])).astype(np.int)
             for i in range(self.neuron_count):
                 outputs.append(self.output(selected_inputs, self.weights[i]))
                 guess.append(self.classify(outputs[i])) 
@@ -73,3 +79,12 @@ class SingleLayerPerceptron(Perceptron):
         if(np.sum(guess) != 1):
             new_guess = [1 if output == high_output else 0 for output in outputs]
         return new_guess
+
+    @staticmethod
+    def create_points(source, _class):
+        points = []
+        for _ in range(50):
+            coords = [source[i] + np.random.random() * 0.09 for i in range(2)]
+            coords.append(_class)
+            points.append(coords)          
+        return pd.DataFrame(data=points, columns=['x1', 'x2', 'd'])
