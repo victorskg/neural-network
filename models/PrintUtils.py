@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def print_multi_weigths(inputs, weigths, datas):
+def print_multi_weigths(inputs, datas):
     setosa, versicolor, virginica = [], [], []
     for data in datas:
         selected_inputs = [data[inputs[j]] for j in range(len(inputs))]  

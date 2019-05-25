@@ -139,28 +139,32 @@ def main():
 
     def run_single_layer_perceptron():
         accuracys = []
+        inputs = [2, 3]
         single_layer_perceptron.prepare_data()
         for i in range(20):
-            single_layer_perceptron.train([2, 3], single_layer_perceptron.data_set)
-            accuracys.append(single_layer_perceptron.test([2, 3]))
+            single_layer_perceptron.train(inputs, single_layer_perceptron.data_set)
+            accuracys.append(single_layer_perceptron.test(inputs))
             print('Realização: {0}, Acurácia: {1}%'.format(i+1, accuracys[i]))
         
         print('Acurácia após 20 realizações: {0}%, Desvio padrão: {1}'.format(_calc_accuracy(accuracys), np.std(accuracys)))
+        single_layer_perceptron.plot_decision_surface(inputs)
 
-    #run_single_layer_perceptron()
+    run_single_layer_perceptron()
 
     def run_slp_artificial_dataset():
         accuracys = []
+        inputs = [0, 1]
         single_layer_perceptron.generate_artificial_data()
         for i in range(20):
-            single_layer_perceptron.train([0, 1], single_layer_perceptron.artiticial_data)
-            accuracys.append(single_layer_perceptron.test([0, 1]))
+            single_layer_perceptron.train(inputs, single_layer_perceptron.artiticial_data)
+            accuracys.append(single_layer_perceptron.test(inputs))
             print('Realização: {0}, Acurácia: {1}%'.format(i+1, accuracys[i]))
         
         print('Acurácia após 20 realizações: {0}%, Desvio padrão: {1}'.format(_calc_accuracy(accuracys), np.std(accuracys)))
+        single_layer_perceptron.plot_decision_surface(inputs)
 
 
-    run_slp_artificial_dataset()
+    #run_slp_artificial_dataset()
 
 if __name__ == '__main__':
     main()

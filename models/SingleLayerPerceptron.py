@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 from models.Perceptron import Perceptron
 
 class SingleLayerPerceptron(Perceptron):
@@ -64,6 +65,40 @@ class SingleLayerPerceptron(Perceptron):
             #print('Expected: {0}, Guess: {1}'.format(expected, guess))
 
         return (hits / len(self.test_data)) * 100
+
+    def plot_decision_surface(self, inputs):
+        x1_colunm, x2_colunm = self.test_data[:, inputs[0]], self.test_data[:, inputs[1]]
+        x1_max, x1_min = np.amax(x1_colunm) + 0.5, np.amin(x1_colunm) - 0.5
+        x2_max, x2_min = np.amax(x2_colunm) + 0.5, np.amin(x2_colunm) - 0.5
+
+        xx1, xx2 = np.meshgrid(np.arange(x1_min, x1_max, 0.07), np.arange(x2_min, x2_max, 0.07))
+        Z =  np.array([xx1.ravel(), xx2.ravel()]).T
+        
+        fig, ax = plt.subplots()
+        ax.set_facecolor((0.97, 0.97, 0.97))
+        for x1, x2 in Z:
+            outputs, guess = [], []
+            for i in range(self.neuron_count):
+                outputs.append(self.output([x1, x2], self.weights[i]))
+                guess.append(self.classify(outputs[i]))
+            high_output = np.amax(outputs)
+            guess = self.validate_guess(guess, high_output, outputs)
+            if (np.array_equal(guess, [1, 0, 0])): 
+                ax.scatter(x1, x2, c='red', s=1.5, marker='o')
+            elif (np.array_equal(guess, [0, 1, 0])):
+                ax.scatter(x1, x2, c='green', s=1.5, marker='o')
+            elif (np.array_equal(guess, [0, 0, 1])): 
+                ax.scatter(x1, x2, c='blue', s=1.5, marker='o')
+
+        for row in self.test_data:
+            expected = np.array(list(row[len(row)-1])).astype(np.int)
+            if (np.array_equal(expected, [1, 0, 0])):
+                ax.scatter(row[inputs[0]], row[inputs[1]], c='red', marker='v')
+            elif (np.array_equal(expected, [0, 1, 0])):
+                ax.scatter(row[inputs[0]], row[inputs[1]], c='green', marker='*')       
+            elif (np.array_equal(expected, [0, 0, 1])):
+                ax.scatter(row[inputs[0]], row[inputs[1]], c='blue', marker='o')       
+        plt.show()
     
     @staticmethod
     def output(inputs, weights):
