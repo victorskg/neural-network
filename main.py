@@ -140,7 +140,7 @@ def main():
     def run_single_layer_perceptron():
         accuracys = []
         inputs = [2, 3]
-        single_layer_perceptron.prepare_data()
+        single_layer_perceptron.prepare_data(2)
         for i in range(20):
             single_layer_perceptron.train(inputs, single_layer_perceptron.data_set)
             accuracys.append(single_layer_perceptron.test(inputs))
@@ -154,7 +154,7 @@ def main():
     def run_slp_artificial_dataset():
         accuracys = []
         inputs = [0, 1]
-        single_layer_perceptron.generate_artificial_data()
+        single_layer_perceptron.generate_artificial_data(2)
         for i in range(20):
             single_layer_perceptron.train(inputs, single_layer_perceptron.artiticial_data)
             accuracys.append(single_layer_perceptron.test(inputs))
