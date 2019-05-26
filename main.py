@@ -114,10 +114,10 @@ def main():
     #virginica4INPUTS()
 
     def run_adaline_2d():
-        best_realization, min_mse = 0, 100
         data_set, weigths = [], []
+        best_realization, min_mse = 0, 100
+        adaline.start_artificial_dataset_2d(a=2, b=3)
         for i in range(20):
-            adaline.start_artificial_dataset_2d(a=2, b=3)
             adaline.train(adaline.data_set)
             adaline.test()
             mse = np.mean(adaline.realization_errors)
@@ -131,9 +131,19 @@ def main():
     #run_adaline_2d()
 
     def run_adaline_3d():
+        data_set, weigths = [], []
+        best_realization, min_mse = 0, 100
         adaline.start_artificial_dataset_3d(a=3, b=2, c=1)
-        adaline.train_3d(adaline.data_set)
-        adaline.plot_3d(adaline.data_set, adaline.weights)
+        for i in range(20):
+            adaline.train_3d(adaline.data_set)
+            adaline.test_3d()
+            mse = np.mean(adaline.realization_errors)
+            rmse = np.sqrt(mse)
+            if (mse < min_mse):
+                best_realization, min_mse, data_set, weigths = i+1, mse, adaline.data_set, adaline.weights
+            print('Realização: ', i+1, ', MSE: ', mse, ', RMSE: ', rmse)
+        print('Melhor realizacao: ', best_realization, ', MSE: ', min_mse)
+        adaline.plot_3d(data_set, weigths)
 
     #run_adaline_3d()
 
@@ -149,7 +159,7 @@ def main():
         print('Acurácia após 20 realizações: {0}%, Desvio padrão: {1}'.format(_calc_accuracy(accuracys), np.std(accuracys)))
         single_layer_perceptron.plot_decision_surface(inputs)
 
-    run_single_layer_perceptron()
+    #run_single_layer_perceptron()
 
     def run_slp_artificial_dataset():
         accuracys = []

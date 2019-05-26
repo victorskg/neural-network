@@ -63,6 +63,8 @@ class Adaline(object):
         Y = [self.y(x, a, b) + np.random.uniform(-1, 1) for x in X]
         data = np.array([[i, j] for i, j in zip(X, Y)])
         self.data_set = self.normalize(data)
+        plt.scatter(self.data_set[:, 0], self.data_set[:, 1], s=3, c='r')
+        plt.show()
 
     def start_artificial_dataset_3d(self, a, b, c):
         self.init_weights(3)
@@ -71,8 +73,10 @@ class Adaline(object):
         Z = [self.z(x, y, a, b, c) + np.random.uniform(-1, 1) for x, y in zip(X, Y)]
         data = np.array([[Z[i][0], X[i], Y[i][0]] for i in range(len(Z))])
         self.data_set = self.normalize(data)
-        print(self.data_set)
-        #self.plot_3d(self.data_set, 0)
+        fig = plt.figure()
+        ax = fig.add_subplot(111, projection='3d')
+        ax.scatter(self.data_set[:, 0], self.data_set[:, 1], self.data_set[:, 2], c='k', marker='o')
+        plt.show()
 
 
     def train(self, dataset):
@@ -105,13 +109,20 @@ class Adaline(object):
                 guess = np.dot(inputs, self.weights)
                 error = z - guess
                 self.weights += self.learn_rate * error * inputs
-        print(self.weights)
 
     def test(self):
-        errors = []
+        self.realization_errors, errors = [], []
         for data in self.test_data:
             y = np.dot(np.array([-1.0, data[0]]), self.weights)
             error = data[1] - y
+            errors.append(error * error)
+        self.realization_errors.append(np.mean(errors))
+
+    def test_3d(self):
+        self.realization_errors, errors = [], []
+        for data in self.test_data:
+            y = np.dot(np.array([-1.0, data[1], data[2]]), self.weights)
+            error = data[0] - y
             errors.append(error * error)
         self.realization_errors.append(np.mean(errors))
 
