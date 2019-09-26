@@ -1,20 +1,52 @@
 import numpy as np
 import pandas as pd
 
-from .Iris import Iris
-
-
 class Perceptron(object):
-    max_epochs = 0
     inputs_size = 0
-    learn_rate = 0.0
     weights, values = [], []
-    data_set, iris_data, train_data, test_data = [], [], [], []
+    data_set, train_data, test_data = [], [], []
 
     def __init__(self, learn_rate=0.1, max_epochs=200, data_path="datasets/iris.data"):
         self.learn_rate = learn_rate
         self.max_epochs = max_epochs
         self.data_set = self._read_data(data_path)
+        self.prepare_iris_data()
+
+    def prepare_iris_data(self):
+        self.data_set['class'] = self.data_set['class'].replace('Iris-setosa', '1')
+        self.data_set['class'] = self.data_set['class'].replace('Iris-versicolor', '0')
+        self.data_set['class'] = self.data_set['class'].replace('Iris-virginica', '0')
+
+        self.data_set = self.data_set.to_numpy()
+
+    def train(self, train_data, inputs):
+        self.weights = np.random.rand(len(inputs) + 1)
+
+        for _ in range(self.max_epochs):
+            np.random.shuffle(train_data)
+            for iris in train_data:
+                data_in = self._get_inputs(iris, inputs)
+                guess = self.classify(data_in, self.weights)
+                error = int(iris[len(iris)-1]) - guess
+                update = self.learn_rate * error
+                self.weights[1:] += update * np.array(data_in)
+                self.weights[0] += update 
+
+    def test(self, test_data, inputs):
+        hits = 0
+        for iris in test_data:
+            value = self.classify(self._get_inputs(iris, inputs), self.weights)
+            hits = hits + 1 if value == int(iris[len(iris)-1]) else hits
+            #print(self._get_inputs(iris, inputs))
+            #print('Predict: {0}, Class: {1}'.format(value, int(iris[len(iris)-1])))
+        accuracy = (hits / len(test_data)) * 100
+        print(accuracy)
+        return accuracy
+
+    @staticmethod
+    def classify(inputs, weights):
+        value = np.dot(inputs, weights[1:]) + weights[0]
+        return 1 if value >= 0.0 else 0
 
     @staticmethod
     def _read_data(path):
@@ -23,53 +55,6 @@ class Perceptron(object):
 
         return data
 
-    def _get_inputs(self, row, inputs_str):
-        inputs = []
-        for in_str in inputs_str:
-            inputs.append(row[in_str])
-        inputs.append(row['class'])
-
-        return inputs
-
-    def prepare_data(self, data_type, inputs_str):
-        self.inputs_size = len(inputs_str)
-        self.iris_data, self.train_data, self.test_data = [], [], []
-        for row in self.data_set.iterrows():
-            self.iris_data.append(Iris(inputs=self._get_inputs(row[1], inputs_str), expected_type=data_type))
-            np.random.shuffle(self.iris_data)
-
-    def train(self, dataset):
-        qt_trainning = int(0.8 * len(dataset))
-        self.weights = np.random.rand(self.inputs_size + 1)
-        self.train_data, self.test_data = dataset[:qt_trainning], dataset[qt_trainning:]
-
-        for _ in range(self.max_epochs):
-            np.random.shuffle(self.train_data)
-            for iris in self.test_data:
-                guess = self.classify(iris.inputs[:self.inputs_size], self.weights)
-                error = iris.expected_type - guess
-                update = self.learn_rate * error
-                self.weights[1:] += update * np.array(iris.inputs[:self.inputs_size])
-                self.weights[0] += update 
-
     @staticmethod
-    def classify(inputs, weights):
-        value = np.dot(inputs, weights[1:]) + weights[0]
-        return 1 if value >= 0.0 else 0
-
-    def test(self):
-        self.values = []
-        for iris in self.test_data:
-            value = self.classify(iris.inputs[:self.inputs_size], self.weights)
-            self.values.append(value)
-            #print('Guess_Type: {0}, Expected_Type: {1}'.format(value, iris.inputs[self.inputs_size]))
-
-    def accuracy_and_matrix(self):
-        hits = 0
-        matrix = [[0, 0], [0, 0]]
-        for xi, yi in zip(self.test_data, self.values):
-            matrix[xi.expected_type][yi] += 1
-            if (xi.expected_type == yi): hits += 1
-        
-        accuracy = (hits / len(self.test_data)) * 100
-        return accuracy, np.array(matrix)
+    def _get_inputs(row, inputs):
+        return [row[inputs[i]] for i in range(len(inputs))]
