@@ -2,8 +2,8 @@ import numpy as np
 import pandas as pd
 
 class Perceptron(object):
+    weights = []
     inputs_size = 0
-    weights, values = [], []
     data_set, train_data, test_data = [], [], []
 
     def __init__(self, learn_rate=0.1, max_epochs=200, data_path="datasets/iris.data"):
@@ -13,9 +13,9 @@ class Perceptron(object):
         self.prepare_iris_data()
 
     def prepare_iris_data(self):
-        self.data_set['class'] = self.data_set['class'].replace('Iris-setosa', '1')
+        self.data_set['class'] = self.data_set['class'].replace('Iris-setosa', '0')
         self.data_set['class'] = self.data_set['class'].replace('Iris-versicolor', '0')
-        self.data_set['class'] = self.data_set['class'].replace('Iris-virginica', '0')
+        self.data_set['class'] = self.data_set['class'].replace('Iris-virginica', '1')
 
         self.data_set = self.data_set.to_numpy()
 
@@ -39,9 +39,7 @@ class Perceptron(object):
             hits = hits + 1 if value == int(iris[len(iris)-1]) else hits
             #print(self._get_inputs(iris, inputs))
             #print('Predict: {0}, Class: {1}'.format(value, int(iris[len(iris)-1])))
-        accuracy = (hits / len(test_data)) * 100
-        print(accuracy)
-        return accuracy
+        return (hits / len(test_data)) * 100
 
     @staticmethod
     def classify(inputs, weights):

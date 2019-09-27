@@ -1,5 +1,6 @@
 import numpy as np
 import models.DataUtils as ut
+import matplotlib.pyplot as plt
 from models.Adaline import Adaline
 from models.Perceptron import Perceptron
 from models.SingleLayerPerceptron import SingleLayerPerceptron
@@ -14,32 +15,48 @@ def main():
 
 def run_perceptron_iris():
     inputs = [0, 1, 2, 3]
-    perceptron = Perceptron(learn_rate=0.1, max_epochs=30, data_path="datasets/iris.data")
-    qt_trainning = int(0.8 * len(perceptron.data_set))
-    np.random.shuffle(perceptron.data_set)
-    train_data, test_data = perceptron.data_set[:qt_trainning], perceptron.data_set[qt_trainning:]
-    perceptron.train(train_data, inputs)
-    perceptron.test(test_data, inputs)
+    accurracys = []
+    for i in range(10):
+        perceptron = Perceptron(learn_rate=0.1, max_epochs=30, data_path="datasets/iris.data")
+        qt_trainning = int(0.8 * len(perceptron.data_set))
+        np.random.shuffle(perceptron.data_set)
+        train_data, test_data = perceptron.data_set[:qt_trainning], perceptron.data_set[qt_trainning:]
+        perceptron.train(train_data, inputs)
+        accurracys.append(perceptron.test(test_data, inputs))
+        print('Realização: {0}, Acurácia: {1}%'.format(i, accurracys[i]))
+    print('Acurácia Média: {0}, Desvio Padrão: {1}%'.format(_calc_accuracy(accurracys), np.std(accurracys)))
 
 def run_perceptron_and():
     inputs = [0, 1]
-    perceptron = Perceptron(learn_rate=0.1, max_epochs=10, data_path="datasets/iris.data")
-    data_set = ut.get_and().to_numpy()
-    np.random.shuffle(data_set)
-    qt_trainning = int(0.8 * len(data_set))
-    train_data, test_data = data_set[:qt_trainning], data_set[qt_trainning:]
-    perceptron.train(train_data, inputs)
-    perceptron.test(test_data, inputs)
+    accurracys = []
+    for i in range(10):
+        perceptron = Perceptron(learn_rate=0.1, max_epochs=10, data_path="datasets/iris.data")
+        data_set = ut.get_and().to_numpy()
+        np.random.shuffle(data_set)
+        qt_trainning = int(0.8 * len(data_set))
+        train_data, test_data = data_set[:qt_trainning], data_set[qt_trainning:]
+        perceptron.train(train_data, inputs)
+        accurracys.append(perceptron.test(test_data, inputs))
+        print('Realização: {0}, Acurácia: {1}%'.format(i, accurracys[i]))
+        if i==9:
+            print_points(input, perceptron.weights, test_data)
+    print('Acurácia Média: {0}, Desvio Padrão: {1}%'.format(_calc_accuracy(accurracys), np.std(accurracys)))
 
 def run_perceptron_or():
     inputs = [0, 1]
-    perceptron = Perceptron(learn_rate=0.1, max_epochs=10, data_path="datasets/iris.data")
-    data_set = ut.get_or().to_numpy()
-    np.random.shuffle(data_set)
-    qt_trainning = int(0.8 * len(data_set))
-    train_data, test_data = data_set[:qt_trainning], data_set[qt_trainning:]
-    perceptron.train(train_data, inputs)
-    perceptron.test(test_data, inputs)
+    accurracys = []
+    for i in range(10):
+        perceptron = Perceptron(learn_rate=0.1, max_epochs=10, data_path="datasets/iris.data")
+        data_set = ut.get_or().to_numpy()
+        np.random.shuffle(data_set)
+        qt_trainning = int(0.8 * len(data_set))
+        train_data, test_data = data_set[:qt_trainning], data_set[qt_trainning:]
+        perceptron.train(train_data, inputs)
+        accurracys.append(perceptron.test(test_data, inputs))
+        print('Realização: {0}, Acurácia: {1}%'.format(i, accurracys[i]))
+        if i==9:
+            print_points(input, perceptron.weights, test_data)
+    print('Acurácia Média: {0}, Desvio Padrão: {1}%'.format(_calc_accuracy(accurracys), np.std(accurracys)))
 
 def run_adaline_2d():
     adaline = Adaline(learn_rate=0.1, max_epochs=200)
@@ -115,6 +132,24 @@ def run_slp_artificial_dataset():
 
 def _calc_accuracy(array):
     return sum(array) / len(array)
+
+def print_points(inputs, w, data):
+    actual_type, others = [], [] 
+    for i in range(len(data)): 
+        if (data[i][2] == '1'):
+            actual_type.append(data[i][:2])
+        else: others.append(data[i][:2])
+    
+    a = np.linspace(0 , 1.1, 10)
+    b = (-(w[0]/w[2]) / (w[0]/w[1]))*a + (-w[0] / w[2])
+    plt.plot(a, b, '-r')
+
+    x, y = np.array(actual_type).T
+    w, z = np.array(others).T
+    plt.xlabel('X')
+    plt.ylabel('Y')
+    plt.plot(x,y, 'bo', w, z, 'go')
+    plt.show()
 
 
 if __name__ == '__main__':
