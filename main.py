@@ -17,7 +17,7 @@ def run_perceptron_iris():
     inputs = [0, 1, 2, 3]
     accurracys = []
     for i in range(10):
-        perceptron = Perceptron(learn_rate=0.1, max_epochs=30, data_path="datasets/iris.data")
+        perceptron = Perceptron(learn_rate=0.1, max_epochs=30, data_path="datasets/iris.data", activation=2)
         qt_trainning = int(0.8 * len(perceptron.data_set))
         np.random.shuffle(perceptron.data_set)
         train_data, test_data = perceptron.data_set[:qt_trainning], perceptron.data_set[qt_trainning:]
@@ -30,7 +30,7 @@ def run_perceptron_and():
     inputs = [0, 1]
     accurracys = []
     for i in range(10):
-        perceptron = Perceptron(learn_rate=0.1, max_epochs=10, data_path="datasets/iris.data")
+        perceptron = Perceptron(learn_rate=0.1, max_epochs=10, data_path="datasets/iris.data", activation=2)
         data_set = ut.get_and().to_numpy()
         np.random.shuffle(data_set)
         qt_trainning = int(0.8 * len(data_set))
@@ -46,7 +46,7 @@ def run_perceptron_or():
     inputs = [0, 1]
     accurracys = []
     for i in range(10):
-        perceptron = Perceptron(learn_rate=0.1, max_epochs=10, data_path="datasets/iris.data")
+        perceptron = Perceptron(learn_rate=0.1, max_epochs=10, data_path="datasets/iris.data", activation=2)
         data_set = ut.get_or().to_numpy()
         np.random.shuffle(data_set)
         qt_trainning = int(0.8 * len(data_set))

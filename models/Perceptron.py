@@ -1,3 +1,4 @@
+import math
 import numpy as np
 import pandas as pd
 
@@ -6,9 +7,10 @@ class Perceptron(object):
     inputs_size = 0
     data_set, train_data, test_data = [], [], []
 
-    def __init__(self, learn_rate=0.1, max_epochs=200, data_path="datasets/iris.data"):
+    def __init__(self, learn_rate=0.1, max_epochs=200, data_path="datasets/iris.data", activation=0):
         self.learn_rate = learn_rate
         self.max_epochs = max_epochs
+        self.activation = activation
         self.data_set = self._read_data(data_path)
         self.prepare_iris_data()
 
@@ -41,10 +43,14 @@ class Perceptron(object):
             #print('Predict: {0}, Class: {1}'.format(value, int(iris[len(iris)-1])))
         return (hits / len(test_data)) * 100
 
-    @staticmethod
-    def classify(inputs, weights):
+    def classify(self, inputs, weights):
         value = np.dot(inputs, weights[1:]) + weights[0]
-        return 1 if value >= 0.0 else 0
+        if self.activation == 0:
+            return self.step(value)
+        elif self.activation == 1:
+            return self.logistic_sigmoid(value)
+        else:
+            return self.hyperbolic_tangent(value)
 
     @staticmethod
     def _read_data(path):
@@ -56,3 +62,17 @@ class Perceptron(object):
     @staticmethod
     def _get_inputs(row, inputs):
         return [row[inputs[i]] for i in range(len(inputs))]
+
+    @staticmethod
+    def step(x):
+        return 1.0 if x >= 0.0 else 0.0
+
+    @staticmethod
+    def logistic_sigmoid(x):
+        value = 1.0 / (1.0 + math.exp(-x)) 
+        return 1 if value >= 0.5 else 0.0
+
+    @staticmethod
+    def hyperbolic_tangent(x):
+        value = math.tanh(x)
+        return 1 if value >= 0.0 else 0.0
